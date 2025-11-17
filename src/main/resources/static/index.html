@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pagina test licenta <3</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #f1c7b0;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #f1c7b0;
+        }
+        .message {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Pagina de Test </h1>
+
+    <form id="loginForm" action="/login" method="POST">
+        <h2>Autentificare</h2>
+        <label for="username">Nume de utilizator:</label>
+        <input type="text" id="username" name="username" required>
+        <label for="password">Parolă:</label>
+        <input type="password" id="password" name="password" required>
+        <button type="submit">Login</button>
+    </form>
+    <div id="loginMessage" class="message"></div>
+
+    <form id="searchForm" action="/search" method="GET">
+        <h2>Căutare</h2>
+        <label for="query">Introduceți termenul de căutare:</label>
+        <input type="text" id="query" name="query" required>
+        <button type="submit">Caută</button>
+    </form>
+
+    <div id="searchMessage" class="message"></div>
+
+    <form id="commentForm" action="/api/comments" method="POST">
+        <h2>Adaugă un comentariu</h2>
+        <label for="comment">Comentariu:</label>
+        <input type="text" id="comment" name="comment" required>
+        <button type="submit">Trimite</button>
+    </form>
+    <div id="postCommentMessage" class="message"></div>
+
+    <form action="/api/comments" method="GET">
+        <button type="submit"> Comentarii</button>
+    </form>
+    <div id="commentListMessage" class="message"></div>
+
+    <form id="fileAccessForm" action="/api/files" method="GET">
+        <h2>Accesează un fișier</h2>
+        <label for="filename">Numele fișierului:</label>
+        <input type="text" id="filename" name="file" required>
+        <button type="submit">Accesează</button>
+    </form>
+    <div id="fileAccessMessage" class="message"></div>
+
+    <form action="/api/logs" method="GET">
+        <h2>Vizualizare Loguri</h2>
+        <button type="submit" id="logAccess"> Loguri</button>
+    </form>
+
+</div>
+
+<script>
+    document.getElementById("loginForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+
+        fetch('/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username: username, password: password })
+        })
+            .then(response => response.json())
+            .then(data => {
+                const loginMessage = document.getElementById("loginMessage");
+                if (data.success) {
+                    loginMessage.className = "message success";
+                    loginMessage.innerText = "Autentificare reușită!";
+                } else {
+                    loginMessage.className = "message error";
+                    loginMessage.innerText = "Nume de utilizator sau parolă incorectă!";
+                }
+            })
+            .catch(error => {
+                const loginMessage = document.getElementById("loginMessage");
+                loginMessage.className = "message error";
+                loginMessage.innerText = "Eroare la autentificare. Încercați din nou!";
+                console.error('Eroare:', error);
+            });
+    });
+
+    document.getElementById("searchForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+        const query = document.getElementById("query").value;
+
+        fetch('/search?query=' + encodeURIComponent(query))
+            .then(response => response.json())
+            .then(data => {
+                const searchMessage = document.getElementById("searchMessage");
+                if (data.results) {
+                    searchMessage.className = "message success";
+                    searchMessage.innerText = "Rezultat: " ${data.results};
+                } else {
+                    searchMessage.className = "message error";
+                    searchMessage.innerText = "Interogare invalidă!";
+                }
+            })
+            .catch(error => {
+                const searchMessage = document.getElementById("searchMessage");
+                searchMessage.className = "message error";
+                searchMessage.innerText = "Eroare la căutare. Încercați din nou!";
+                console.error('Eroare:', error);
+            });
+    });
+
+    // sim atac
+    document.getElementById("commentForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+        const comment = document.getElementById("comment").value;
+
+        fetch('/api/comments', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ comment: comment })
+        })
+            .then(response => response.text())
+            .then(data => {
+                const msgDiv = document.getElementById("postCommentMessage");
+                msgDiv.className = "message success";
+                msgDiv.innerText = "Comentariu adaugat";
+            })
+            .catch(error => {
+                const msgDiv = document.getElementById("postCommentMessage");
+                msgDiv.className = "message error";
+                msgDiv.innerText = "eroare la trimitere";
+            });
+    });
+
+    document.querySelector('form[action="/api/comments"][method="GET"]').addEventListener("submit", function(event) {
+        event.preventDefault();
+        fetch('/api/comments')
+            .then(response => response.json())
+            .then(data => {
+                const msgDiv = document.getElementById("commentListMessage");
+                msgDiv.className = "message success";
+                if (data.comments && data.comments.length > 0) {
+                    msgDiv.innerText = "Comentarii:\n" + data.comments.map(c => `• ${c}`).join("\n");
+                } else {
+                    msgDiv.innerText = "Nu exista";
+                }
+            })
+            .catch(error => {
+                const msgDiv = document.getElementById("commentListMessage");
+                msgDiv.className = "message error";
+                msgDiv.innerText = "Eroare la preluare.";
+            });
+    });
+
+    document.getElementById("fileAccessForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+        const filename = document.getElementById("filename").value.trim();
+
+        const msgDiv = document.getElementById("fileAccessMessage");
+        msgDiv.className = "message"; // resetam
+
+        if (!filename) {
+            msgDiv.classList.add("error");
+            msgDiv.innerText = "Introduceți un nume de fișier valid.";
+            return;
+        }
+
+        fetch('/api/files?file=' + encodeURIComponent(filename))
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("fisierul nu a fost gasit");
+                }
+                return response.text();
+            })
+            .then(data => {
+                msgDiv.className = "message success";
+                msgDiv.innerText = "fisier: " + data;
+            })
+            .catch(error => {
+                msgDiv.className = "message error";
+                msgDiv.innerText = error.message || "eroare";
+            });
+    });
+
+    // Loguri
+    logAccess.addEventListener("click", () => {
+        fetch('/api/logs')
+            .then(res => res.json())
+            .then(data => alert("Log accesat: " + data.message))
+            .catch(() => alert("Eroare la loguri"));
+    });
+
+
+</script>
+</body>
+</html>

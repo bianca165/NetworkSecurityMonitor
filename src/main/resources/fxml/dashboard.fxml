@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.chart.*?>
+
+
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.networksecuritymonitor.controller.DashboardController"
+            prefHeight="800.0" prefWidth="1100.0"
+            stylesheets="@/css/styles.css">
+
+    <top>
+        <HBox alignment="CENTER" spacing="10"
+              style="-fx-background-color: linear-gradient(to right, #fce0d9, #fff8f4);"
+              prefHeight="40.0">
+            <Label text="Network Security Monitor"
+                   style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #333333;" />
+        </HBox>
+    </top>
+    <left>
+        <VBox fx:id="menuVBox" spacing="15" style="-fx-pref-width: 200;">
+            <Button fx:id="refreshButton" text="Refresh Logs" />
+            <Button fx:id="showChartsButton" text="Show Charts" />
+            <Button text="Exportă CSV" onAction="#exportCSVClicked" />
+            <Label fx:id="csvExportStatus" visible="false" />
+            <Button fx:id="unblockIpButton" text="Unblock IP" />
+            <Button fx:id="blockIpButton" text="Block IP" />
+            <Button fx:id="updateDurationButton" text="Update IP" onAction="#updateBlockDurationForIP" />
+
+
+            <VBox spacing="10" alignment="CENTER">
+                <Label text="IP-uri Blocate:"/>
+                <ListView fx:id="blockedIpListView" prefWidth="250" prefHeight="150"/>
+
+                <Label fx:id="notificationLabel" text=" "/>
+            </VBox>
+            <Button fx:id="refreshBlockedIpsButton" text="Refresh IPs" />
+
+            <!-- liber -->
+            <Region VBox.vgrow="ALWAYS" />
+
+            <Button fx:id="exitButton" text="Exit" />
+        </VBox>
+    </left>
+
+    <center>
+
+        <VBox spacing="15" alignment="TOP_CENTER" style="-fx-padding: 10 15 10 15;">
+            <TableView fx:id="logsTable" prefHeight="400.0" VBox.vgrow="NEVER">
+                <columns>
+                    <TableColumn fx:id="ipColumn" text="IP Address" />
+                    <TableColumn fx:id="urlColumn" text="URL"/>
+                    <TableColumn fx:id="attackColumn" text="Attack Type"/>
+                    <TableColumn fx:id="timestampColumn" text="Timestamp" />
+                    <TableColumn fx:id="statusColumn" text="Status" />
+                </columns>
+            </TableView>
+
+            <ComboBox fx:id="chartSelectorComboBox">
+                <items>
+                    <FXCollections fx:factory="observableArrayList">
+                        <String fx:value="Trafic"/>
+                        <String fx:value="Status Codes"/>
+                    </FXCollections>
+                </items>
+            </ComboBox>
+
+            <StackPane fx:id="chartStackPane">
+                <BarChart fx:id="trafficPerMinuteChart" prefHeight="250.0" prefWidth="700.0">
+                    <xAxis>
+                        <CategoryAxis label="Timp"/>
+                    </xAxis>
+                    <yAxis>
+                        <NumberAxis label="Evenimente"/>
+                    </yAxis>
+                </BarChart>
+
+                <BarChart fx:id="statusCodeChart" prefHeight="250.0" prefWidth="700.0">
+                    <xAxis>
+                        <CategoryAxis label="Cod Status"/>
+                    </xAxis>
+                    <yAxis>
+                        <NumberAxis label="Număr"/>
+                    </yAxis>
+                </BarChart>
+            </StackPane>
+
+            <VBox fx:id="tipsPopupContainer" visible="false" managed="false" styleClass="tips-popup" spacing="5">
+                <Label fx:id="attackTypeLabel" styleClass="attack-type-label"/>
+                <Label fx:id="tipsContentLabel" styleClass="tips-content" wrapText="true"/>
+            </VBox>
+
+        </VBox>
+    </center>
+
+    <right>
+        <VBox spacing="20" alignment="TOP_CENTER" style="-fx-padding: 20 20 20 20; -fx-pref-width: 350;">
+            <Label text="Key Metrics" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+
+            <VBox spacing="10" alignment="CENTER">
+                <Label text="Active Threats" style="-fx-font-weight: bold;" />
+                <Label fx:id="activeThreatsLabel" text="0" />
+
+                <Label text="Blocked Attacks" style="-fx-font-weight: bold;" />
+                <Label fx:id="totalAttacksLabel" text="0" />
+
+                <Label text="Blocked IPs" style="-fx-font-weight: bold;" />
+                <Label fx:id="blockedIpsLabel" text="0" />
+            </VBox>
+
+            <Separator />
+            <PieChart fx:id="attackPieChart" prefWidth="300" prefHeight="300"/>
+
+        </VBox>
+    </right>
+</BorderPane>
