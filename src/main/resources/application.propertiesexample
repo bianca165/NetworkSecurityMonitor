@@ -1,0 +1,7 @@
+spring.application.name=NetworkSecurityMonitor
+spring.data.mongodb.uri=mongodb+srv://<username>:<password>@cluster0.hccz1.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+spring.data.mongodb.database=licenta
+server.port=8081
+server.address=0.0.0.0
+
+
